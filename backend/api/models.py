@@ -35,6 +35,7 @@ class Appointment(models.Model):
     STATUS_CHOICES = (
         ('Pending', 'Pending'),
         ('Confirmed', 'Confirmed'),
+        ('Needs_Reschedule', 'Needs Reschedule'),
         ('Completed', 'Completed'),
         ('Cancelled', 'Cancelled'),
     )
@@ -44,11 +45,13 @@ class Appointment(models.Model):
     date_time = models.DateTimeField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     notes = models.TextField(blank=True, null=True)
-    # Patient contact info (for walk-in or pre-fill)
+    # Patient contact info
     patient_name = models.CharField(max_length=150, blank=True, null=True)
     patient_phone = models.CharField(max_length=20, blank=True, null=True)
     patient_email = models.EmailField(blank=True, null=True)
     patient_address = models.TextField(blank=True, null=True)
+    # Receptionist workflow
+    receptionist_note = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.patient.username} with {self.dentist.username} on {self.date_time}"
