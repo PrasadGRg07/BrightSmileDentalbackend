@@ -19,7 +19,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
         fields = '__all__'
-        read_only_fields = ('patient',) # Patient should be inferred from the request user
+        read_only_fields = ('patient',)
 
 class MedicalRecordSerializer(serializers.ModelSerializer):
     class Meta:
