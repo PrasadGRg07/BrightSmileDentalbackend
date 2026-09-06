@@ -11,6 +11,13 @@ class User(AbstractUser):
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='Patient')
     phone_number = models.CharField(max_length=15, blank=True, null=True)
+    
+    # Doctor Profile Fields
+    specialty = models.CharField(max_length=100, blank=True, null=True)
+    education = models.CharField(max_length=255, blank=True, null=True)
+    experience = models.CharField(max_length=100, blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
+    work_days = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"{self.username} ({self.role})"

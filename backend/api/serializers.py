@@ -4,8 +4,7 @@ from .models import User, Service, Appointment, MedicalRecord
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'role', 'phone_number')
-        read_only_fields = ('role',)
+        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'role', 'phone_number', 'specialty', 'education', 'experience', 'bio', 'work_days')
 
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:

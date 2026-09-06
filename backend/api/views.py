@@ -28,25 +28,44 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
     def get_permissions(self):
-        # Allow anyone to list Dentists
-        if self.action == 'list' and self.request.query_params.get('role') == 'Dentist':
+        # Allow anyone to list Dentists/Doctors
+        if self.action == 'list' and self.request.query_params.get('role') in ['Dentist', 'Doctor']:
             return [permissions.AllowAny()]
         return [permissions.IsAuthenticated()]
 
     def get_queryset(self):
-        # If filtering by Dentist, allow everyone to see them
+        # If filtering by Dentist/Doctor, allow everyone to see them
         role_param = self.request.query_params.get('role')
-        if role_param == 'Dentist':
-            return User.objects.filter(role='Dentist')
+        if role_param in ['Dentist', 'Doctor']:
+            return User.objects.filter(role=role_param)
             
         # Otherwise, restrict to own profile or Admin
         user = self.request.user
         if not user.is_authenticated:
             return User.objects.none()
             
-        if user.role == 'Admin':
+        if user.is_superuser or user.role == 'Admin':
             return User.objects.all()
         return User.objects.filter(id=user.id)
+
+    def perform_create(self, serializer):
+        user = serializer.save()
+        if 'password' in self.request.data:
+            from django.contrib.auth.hashers import make_password
+            user.password = make_password(self.request.data['password'])
+            user.save()
+
+    def perform_update(self, serializer):
+        # Only admin/superuser can change role
+        user = self.request.user
+        if 'role' in self.request.data and not (user.is_superuser or user.role == 'Admin'):
+            serializer.validated_data.pop('role', None)
+        
+        user_instance = serializer.save()
+        if 'password' in self.request.data and self.request.data['password']:
+            from django.contrib.auth.hashers import make_password
+            user_instance.password = make_password(self.request.data['password'])
+            user_instance.save()
 
 class ServiceViewSet(viewsets.ModelViewSet):
     queryset = Service.objects.all()
