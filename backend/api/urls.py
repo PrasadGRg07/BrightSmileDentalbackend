@@ -12,6 +12,7 @@ router.register(r'records', views.MedicalRecordViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('auth/register/', views.register_user, name='register'),
+    path('auth/me/', views.get_current_user, name='current_user'),
     path('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
